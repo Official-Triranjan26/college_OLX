@@ -17,6 +17,7 @@ const crypto = require('node:crypto');
 dotenv.config(); 
 connectDB(); 
 app.use(express.json()); 
+app.use(express.static('public'))
  
 app.get("/",(req,res)=>{ 
     res.send("listining to port"); 
@@ -34,7 +35,6 @@ app.get('/s3Url', async (req, res) => {
 app.post('/api/order', async (req, res) => {
 
     try {
-
         const razorpay = new Razorpay({
             key_id: process.env.RAZORPAY_KEY_ID,
             key_secret: process.env.RAZORPAY_SECRET
@@ -77,6 +77,9 @@ app.post("/api/validate", async (req, res) => {
     res.json({msg: " Transaction is legit!", orderId: razorpay_order_id,paymentId: razorpay_payment_id});
 })
 
+app.get('*', (req, res) => 
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html')
+))
 app.get("*", (req, res) => { 
     res.status(404).json({ 
         success:false, 
