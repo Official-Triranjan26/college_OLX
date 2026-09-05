@@ -1,0 +1,20 @@
+version: "1.0"
+services:
+  frontend:
+    build:
+      context: /client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: always
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    expose:
+      - "4000"
+    # ports:
+    #   - "4000:4000"
+    restart: always
