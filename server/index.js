@@ -77,9 +77,9 @@ app.post("/api/validate", async (req, res) => {
     res.json({msg: " Transaction is legit!", orderId: razorpay_order_id,paymentId: razorpay_payment_id});
 })
 
-app.get('*', (req, res) => 
-    res.sendFile(path.resolve(__dirname, 'public', 'index.html')
-))
+    // app.get('*', (req, res) => 
+    //     res.sendFile(path.resolve(__dirname, 'public', 'index.html')
+    // ))
 app.get("*", (req, res) => { 
     res.status(404).json({ 
         success:false, 

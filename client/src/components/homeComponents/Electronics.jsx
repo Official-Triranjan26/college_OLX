@@ -32,7 +32,7 @@ const Electronics = () => {
         },
       };
 
-      const { data } = await axios.get("http://localhost:4000/api/listed/electronics", config);
+      const { data } = await axios.get("/api/listed/electronics", config);
       // console.log(data)
       setElectronic(data)
       

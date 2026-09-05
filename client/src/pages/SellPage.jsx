@@ -59,7 +59,7 @@ const SellPage = () => {
         },
       };
       const { data } = await axios.post(
-        "http://localhost:4000/api/sell",
+        "/api/sell",
         {
           catagory,
           productName,

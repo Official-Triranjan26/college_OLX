@@ -1,5 +1,26 @@
  # Learning Docker by containerizing MERN application
 
+ ## Stage 3 
+### Two containers , nginx serving react build , express handling backed requests and db queries , manage containers using docker compose              
+              ┌─────────────────────────────────────┐
+              │       Docker Compose Network        │
+              │                                     │
+              │  ┌──────────────┐   ┌────────────┐  │
+              │  │   Frontend   │   │  Backend   │  │
+              │  │   Container  │   │ Container  │  │
+              │  │              │   │            │  │
+              │  │    NGINX     │──▶│  Express   │  │
+              │  │              │   │    API     │  │
+              │  │ React Build  │   │            │  │
+              │  └──────────────┘   └─────┬──────┘  │
+              │                           │         │
+              └───────────────────────────┼─────────┘
+                                          │
+                                          ▼
+                                  ┌───────────────┐
+                                  │ MongoDB Atlas │
+                                  └───────────────┘
+
  ## Stage 2 
 ### Two containers , nginx serving react build , express handling backed requests and db queries , both are communicating in custom bridge network
 

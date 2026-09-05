@@ -31,7 +31,7 @@ const Books = () => {
         },
       };
 
-      const { data } = await axios.get("http://localhost:4000/api/listed/books", config);
+      const { data } = await axios.get("/api/listed/books", config);
       // console.log(data)
       setProducts(data)
       

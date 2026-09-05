@@ -67,7 +67,7 @@ const ProductPage = () => {
     const currency = 'INR';
     const receiptId = '1234567890';
 
-    const response = await fetch('http://localhost:4000/api/order', {
+    const response = await fetch('/api/order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ const ProductPage = () => {
           alert("transaction successful")
           const body = {...response,}
           console.log(body)
-          const validateResponse = await fetch('http://localhost:4000/api/validate', {
+          const validateResponse = await fetch('/api/validate', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -145,7 +145,7 @@ const ProductPage = () => {
   const updateInDB = async(req,res) =>{
     try {
       {console.log("subha hi",orderId,paymentId)}
-      const updatedProductDetails = await fetch(`http://localhost:4000/api/product/updateProductDetails/${id}`, {
+      const updatedProductDetails = await fetch(`/api/product/updateProductDetails/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -173,7 +173,7 @@ const ProductPage = () => {
           "Content-type": "application/json",
         },
       };
-      const url = `http://localhost:4000/api/product/${id}`;
+      const url = `/api/product/${id}`;
       const res = await axios.get(url, config);
       console.log(res.data)
       setAllDetails(res.data);
@@ -191,7 +191,7 @@ const ProductPage = () => {
         },
       };
       if(allDetails){
-        const url = `http://localhost:4000/api/user/name/${allDetails.owner}`
+        const url = `/api/user/name/${allDetails.owner}`
         const res = await axios.get(url,config);
         console.log(res.data)
         setOwner(res.data)

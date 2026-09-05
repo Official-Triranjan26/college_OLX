@@ -31,7 +31,7 @@ const Appliences = () => {
         },
       };
 
-      const { data } = await axios.get("http://localhost:4000/api/listed/appliences", config);
+      const { data } = await axios.get("/api/listed/appliences", config);
       // console.log(data)
       setProducts(data)
       

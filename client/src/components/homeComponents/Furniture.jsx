@@ -31,7 +31,7 @@ const Furniture = () => {
         },
       };
 
-      const { data } = await axios.get("http://localhost:4000/api/listed/furniture", config);
+      const { data } = await axios.get("/api/listed/furniture", config);
       // console.log(data)
       setProducts(data)
       

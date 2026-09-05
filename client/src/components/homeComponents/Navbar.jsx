@@ -53,7 +53,7 @@ const Navbar = ({ sideBar, setSideBar, sideBarFun }) => {
         },
       };
 
-      const { data } = await axios.get("http://localhost:4000/api/listed/search", {
+      const { data } = await axios.get("/api/listed/search", {
         params: { searchString }}, config);
       setItems(data)
       navigate('/listed/search')
