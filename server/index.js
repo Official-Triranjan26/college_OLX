@@ -19,7 +19,7 @@ connectDB();
 app.use(express.json()); 
 app.use(express.static('public'))
  
-app.get("/",(req,res)=>{ 
+app.get("/api",(req,res)=>{ 
     res.send("listining to port"); 
 }) 
 app.use('/api/user',userRoutes);

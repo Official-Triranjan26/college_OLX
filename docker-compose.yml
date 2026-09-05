@@ -1,4 +1,4 @@
-version: "1.0"
+version: "2.0"
 services:
   frontend:
     build:
@@ -8,6 +8,8 @@ services:
       - "3000:80"
     depends_on:
       - backend
+    networks:
+      - college-olx-private-network
     restart: always
   backend:
     build:
@@ -17,4 +19,25 @@ services:
       - "4000"
     # ports:
     #   - "4000:4000"
+    depends_on:
+      - database
+    networks:
+      - college-olx-private-network
     restart: always
+  database:
+    image: mongo:6.0 # Use the official MongoDB image
+    volumes:
+      - mongo-data:/data/db # Map the volume for persistent data
+    expose:
+      - "27017"
+    ports:
+      - "27018:27017"
+    networks:
+      - college-olx-private-network
+    restart: always
+networks:
+  college-olx-private-network:
+      driver: bridge
+# Define the persistent volume
+volumes:
+  mongo-data:

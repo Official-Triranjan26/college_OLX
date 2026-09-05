@@ -1,5 +1,38 @@
  # Learning Docker by containerizing MERN application
 
+ ## Stage 4
+### Three containers , nginx serving react build , express handling backed requests , standalone mongodb container with persistent storage , everyone is within a custom bridge network , managing containers using docker compose              
+                    ┌─────────────────────────────────────────────┐
+                    │              Docker Compose                 │
+                    │                                             │
+                    │          college-olx-private-network        │
+                    │                                             │
+                    │  ┌────────────────┐    ┌────────────────┐   │
+                    │  │    Frontend    │    │    Backend     │   │
+                    │  │    Container   │    │    Container   │   │
+                    │  │                │    │                │   │
+                    │  │     NGINX      │───▶│    Express     │   │
+                    │  │       │        │    │      API       │   │
+                    │  │       ▼        │    │                │   │
+                    │  │ React Static   │    └───────┬────────┘   │
+                    │  │     Build      │            │            │
+                    │  └────────────────┘            │            │
+                    │                                │            │
+                    │                                ▼            │
+                    │                       ┌────────────────┐    │
+                    │                       │    Database    │    │
+                    │                       │    Container   │    │
+                    │                       │                │    │
+                    │                       │    MongoDB 6   │    │
+                    │                       └───────┬────────┘    │
+                    │                               │             │
+                    └───────────────────────────────┼─────────────┘
+                                                    │
+                                           Persistent Volume
+                                                    │
+                                                    ▼
+                                             mongo-data
+                                             
  ## Stage 3 
 ### Two containers , nginx serving react build , express handling backed requests and db queries , manage containers using docker compose              
               ┌─────────────────────────────────────┐
