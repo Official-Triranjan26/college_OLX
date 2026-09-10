@@ -1,6 +1,6 @@
 import React from 'react'
 import classnames from "classnames";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaComputer } from "react-icons/fa6";
 import { IoBookSharp } from "react-icons/io5";
 import { FaTools } from "react-icons/fa";

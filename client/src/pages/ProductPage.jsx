@@ -8,7 +8,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 // import required modules
 import { Pagination, Navigation } from "swiper/modules";
-import { electronics } from "../images/exportAllImages";
+//  import { electronics } from "../images/exportAllImages";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { IoShareSocialSharp } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
@@ -22,7 +22,7 @@ import {ProductFooter} from "../components/homeComponents/Footer";
 
 import { useNavigate, useParams } from 'react-router-dom';
 // import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+//import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {UserState} from "../context/context"
 import axios from 'axios'
@@ -35,21 +35,21 @@ const ProductPage = () => {
   const { user} = UserState();
   const {id}=useParams();
 
-  const showToastMessage = (state, s) => {
-    if (state === "warn") {
-      return toast.warn(s, {
-        position: "bottom-center",
-      });
-    } else if (state === "error") {
-      return toast.error(s, {
-        position: "bottom-center",
-      });
-    } else if (state === "success") {
-      return toast.success(s, {
-        position: "bottom-center",
-      });
-    }
-  }
+  // const showToastMessage = (state, s) => {
+  //   if (state === "warn") {
+  //     return toast.warn(s, {
+  //       position: "bottom-center",
+  //     });
+  //   } else if (state === "error") {
+  //     return toast.error(s, {
+  //       position: "bottom-center",
+  //     });
+  //   } else if (state === "success") {
+  //     return toast.success(s, {
+  //       position: "bottom-center",
+  //     });
+  //   }
+  // }
 
   const [allDetails,setAllDetails]=useState([]);
   const [orderId,setOrderId]=useState('');
@@ -142,10 +142,13 @@ const ProductPage = () => {
     }
  }, [paymentId])
    
-  const updateInDB = async(req,res) =>{
+  const updateInDB = async(
+    //  req,res
+  ) =>{
     try {
       {console.log("subha hi",orderId,paymentId)}
-      const updatedProductDetails = await fetch(`/api/product/updateProductDetails/${id}`, {
+      //  const updatedProductDetails = 
+      await fetch(`/api/product/updateProductDetails/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -234,8 +237,8 @@ const ProductPage = () => {
         className="mySwiper h-96 bg-black mt-2 px-5"
       >
         
-        {allDetails.images?allDetails.images.map((image)=>(
-          <SwiperSlide className="flex items-center justify-center">
+        {allDetails.images?allDetails.images.map((image,key)=>(
+          <SwiperSlide className="flex items-center justify-center" key={key}>
             <img
               src={`${image}`}
               alt="image"
@@ -346,7 +349,7 @@ const ProductPage = () => {
                 {
                   recommanded?
                   recommanded.map((product)=>(
-                    <SwiperSlide>
+                    <SwiperSlide key={product._id}>
                     <ProductCard {...product} key={product._id}/></SwiperSlide>
                   ))
                   :""

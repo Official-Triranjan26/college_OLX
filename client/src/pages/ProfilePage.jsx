@@ -4,7 +4,7 @@ import { RiShoppingCart2Line } from "react-icons/ri";
 import { FaRegHeart } from "react-icons/fa";
 import { MdOutlineSell } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
-import { Link, Outlet, useParams } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 const ProfilePage = () => {
   return <>

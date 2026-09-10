@@ -1,8 +1,8 @@
 import React from "react";
-import { electronics } from "../../images/exportAllImages";
+//import { electronics } from "../../images/exportAllImages";
 import { FaHeart } from "react-icons/fa6";
 import { AiFillThunderbolt } from "react-icons/ai";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 const ProductCard = ({
   _id,
   productName,
@@ -11,7 +11,7 @@ const ProductCard = ({
   price,
   images,
 }) => {
-  const navigate = useNavigate();
+  //  const navigate = useNavigate();
   return (
     <Link to={`/product/${_id}`}>
       <div className="flex flex-col gap-1 py-2 border-2 border-gray-300 rounded-md h-60 relative">

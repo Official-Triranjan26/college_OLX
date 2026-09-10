@@ -3,7 +3,7 @@ const UserModel = require("../models/userModel");
 const {LocalStorage}=require("node-localstorage")
  
 const authSignin = async (req,res) => { 
-  localStorage = new LocalStorage('./local')
+  let localStorage = new LocalStorage('./local')
   const {email,password}=req.body; 
  
   if(!email || !password){ 
@@ -39,7 +39,7 @@ const authSignin = async (req,res) => {
 }; 
  
 const authSignup = async (req, res) => { 
-  localStorage = new LocalStorage('./local')
+  let localStorage = new LocalStorage('./local')
   const { name, email, password} = req.body; 
   if (!name  || !email  || !password) { 
     return res.status(400).json({ 
@@ -98,7 +98,7 @@ const getUserByID = async(req,res)=>{
 
 const updateWishlist =async(req,res)=>{
   try {
-    localStorage = new LocalStorage('./local')
+    let localStorage = new LocalStorage('./local')
     const userId =localStorage.getItem("user_ID")
     const productId = req.params.productId;
     console.log(userId,productId);

@@ -1,10 +1,9 @@
-import React , { useEffect } from "react";
+import React  from "react";
 import logo from "../images/college_olx_logo.png"
 import { Tab } from "@headlessui/react";
 import Login from "../components/authComponents/Login";
 import Signup from "../components/authComponents/SignUp";
-import { useNavigate } from "react-router-dom";
-import classnames from "classnames"
+//  import classnames from "classnames"
 
 const AuthPage = () => {
     function classNames(...classes) {

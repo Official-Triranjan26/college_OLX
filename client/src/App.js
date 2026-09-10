@@ -9,7 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { Appliences, Books, Electronics, Engineering, Furniture } from './components/homeComponents/allExport'
 import AllContent from "./components/homeComponents/AllContent";
-import TestPage from "./pages/TestPage";
 import SearchPage from "./pages/SearchPage";
 import ProfilePage from "./pages/ProfilePage";
 

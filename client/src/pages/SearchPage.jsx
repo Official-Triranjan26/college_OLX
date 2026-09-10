@@ -2,7 +2,7 @@ import React from 'react'
 import ProductCard from "../components/homeComponents/ProductCard"
 import {UserState} from "../context/context"
 const SearchPage = () => {
-  const {items,setItems} = UserState();
+  const {items} = UserState();
   return <>
     <div className='flex flex-col'>
         <span className='text-2xl font-semibold text-left py-3 px-5 items-start justify-start'>Results for search</span>

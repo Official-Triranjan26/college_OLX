@@ -84,7 +84,7 @@ const SellPage = () => {
   const [pic1, setPic1] = useState();
   const [pic2, setPic2] = useState();
   const [pic3, setPic3] = useState();
-  const [pic,setPic]=useState();
+  //  const [pic,setPic]=useState();
   const [images, setImages] =  useState([])
   const handleSubmit = async (pic,id) => {
     if(!pic) return
@@ -241,7 +241,7 @@ const SellPage = () => {
               
               {/* {pic1 ? } */}
               <div className=" flex gap-10 items-center">
-                <label for="upload1">
+                <label htmlFor="upload1">
                   <div className="p-3 border-2 border-gray-300 text-gray-500 w-14" id="label1">
                     <TbCameraPlus className="text-3xl" />
                   </div>
@@ -254,7 +254,7 @@ const SellPage = () => {
 
               <input type="file" id="upload2" name="img2" accept="image/*" onChange={(e)=>handleImage(e.target.files[0],"label2")} hidden />
               <div className=" flex gap-10 items-center">
-                <label for="upload2">
+                <label htmlFor="upload2">
                   <div className="p-3 border-2 border-gray-300 w-14 text-gray-500" id="label2">
                     <TbCameraPlus className="text-3xl " />
                   </div>
@@ -266,7 +266,7 @@ const SellPage = () => {
 
               <input type="file" id="upload3" name="img" accept="image/*" onChange={(e)=>handleImage(e.target.files[0],"label3")} hidden />
               <div className=" flex gap-10 items-center">
-                <label for="upload3">
+                <label htmlFor="upload3">
                   <div className="p-3 border-2 border-gray-300 w-14 text-gray-500" id="label3">
                     <TbCameraPlus className="text-3xl " />
                   </div>

@@ -2,8 +2,18 @@ const productModel = require("../models/productModel")
 const {LocalStorage}=require("node-localstorage")
 
 const sellProduct = async (req,res) => { 
-    localStorage = new LocalStorage('./local')
-    const {featured,productName,brandName,description,details,images,owner,price,picupLocation,catagory}=req.body; 
+    let localStorage = new LocalStorage('./local')
+    const {
+        //  featured,
+        productName,
+        //  brandName,
+        description,
+        details,images,
+        //  owner,
+        price,
+        picupLocation,
+        catagory
+    }=req.body; 
    
     if(!productName || !description || !details || !images || !price || !picupLocation  || !catagory){ 
       return res.status(400).json({ 

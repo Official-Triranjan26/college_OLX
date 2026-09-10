@@ -1,6 +1,6 @@
 const productModel = require("../models/productModel")
 const userModel = require("../models/userModel");
-const { use } = require("../routes/userRoutes");
+//  const { use } = require("../routes/userRoutes");
 
 const getWishlist = async(req,res)=>{
     try {

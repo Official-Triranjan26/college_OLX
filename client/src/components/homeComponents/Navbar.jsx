@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IoSearchSharp, IoNotificationsSharp } from "react-icons/io5";
+import { IoSearchSharp} from "react-icons/io5";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import { CiUser } from "react-icons/ci";
 import { GrLogout } from "react-icons/gr";
@@ -11,7 +11,9 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios'
 
-const Navbar = ({ sideBar, setSideBar, sideBarFun }) => {
+const Navbar = (
+  //{ sideBar, setSideBar, sideBarFun }
+) => {
   const showToastMessage = (state, s) => {
     if (state === "warn") {
       return toast.warn(s, {
@@ -29,7 +31,7 @@ const Navbar = ({ sideBar, setSideBar, sideBarFun }) => {
   }
   const [searchString, setSearchString] = useState('');
   // const [items, setItems] = useState([]);
-  const { user,items,setItems } = UserState();
+  const { user,setItems } = UserState();
   // const {items,setItems} = UserState();
   const dropDown = () => setActive(!active);
   const [active, setActive] = useState(false);

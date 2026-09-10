@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ProductCard from './ProductCard'
 import axios from 'axios';
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {UserState} from "../../context/context"
 
