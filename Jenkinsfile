@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        //  STAGE 2 V:2.2
+        //  STAGE 2 V:2.3
         stage('Install Dependencies'){
             agent{
                 docker {
@@ -19,12 +19,12 @@ pipeline {
                         [ -f "$file" ] && echo "✅ $file exists" || echo "❌ $file IS MISSING"
                     done
                     # installing clientside dependencies
-                    cd /client
+                    cd client
                     npm ci
                     ls -la
                     cd ..
                     # installing serverside dependencies
-                    cd /server
+                    cd server
                     npm ci
                     ls -la
                 '''
