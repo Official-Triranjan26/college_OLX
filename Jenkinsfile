@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        //  STAGE 2 V:2.1
+        //  STAGE 2 V:2.2
         stage('Install Dependencies'){
             agent{
                 docker {

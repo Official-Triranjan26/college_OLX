@@ -1,9 +1,7 @@
 client/node_modules
-client/package-lock.json
 client/README.md
 
 server/node_modules
-server/package-lock.json
 server/.env
 
 .dockerignore
