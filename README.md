@@ -1,5 +1,6 @@
  # Learning Jenkins by building CI-CD pipeline for a containerized mern application
 
+
                 ┌─────────────────────────────────────┐
                 │ 1. Checkout Source                  │
                 └──────────────────┬──────────────────┘
