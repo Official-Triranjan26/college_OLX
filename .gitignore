@@ -2,6 +2,8 @@ client/node_modules
 client/README.md
 
 server/node_modules
+server/tests/E2E
+server/tests/integration
 server/.env
 
 .dockerignore

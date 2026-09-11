@@ -13,7 +13,7 @@ pipeline {
             steps {
                 sh '''
                     # 👇 Wipes out the workspace directory after the run completes
-                    cleanWs()
+                    # cleanWs()
                     # checking versions
                     node --version
                     npm --version
@@ -43,15 +43,28 @@ pipeline {
             }
             steps {
                 sh '''
-                    # checking versions
-                    node --version
-                    npm --version
                     # list test clientside
                     cd client
                     npm run lint
                     # list test serverside
                     cd ../server
                     npm run lint
+                '''
+            }
+        }
+        stage('Unit Test'){
+            //  STAGE 3 V:4.1
+            agent{
+                docker {
+                    image 'node:22-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    # list test clientside
+                    cd server
+                    npm run test
                 '''
             }
         }

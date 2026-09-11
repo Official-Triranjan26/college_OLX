@@ -17,7 +17,7 @@ const getProductDetails = async (req,res) =>{
 const updateProductDetails = async (req,res) =>{
     const productId = req.params.id;
     const payment_Details  = req.body;
-    console.log(payment_Details)
+    //  console.log(payment_Details)
      // assuming paymentDetails is provided in the request body
 
     try {
@@ -30,7 +30,7 @@ const updateProductDetails = async (req,res) =>{
           if (!updatedProduct) {
             return res.status(404).send('Product not found');
           }
-          console.log(updatedProduct)
+          //    console.log(updatedProduct)
       
         //   res.send(updatedProduct);
 
@@ -38,7 +38,7 @@ const updateProductDetails = async (req,res) =>{
         res.status(200).json(updatedProduct);
 
     } catch (error) {
-        console.error('Error updating product:', error);
+        //  console.error('Error updating product:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }

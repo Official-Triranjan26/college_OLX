@@ -5,11 +5,11 @@ const userModel = require("../models/userModel");
 const getWishlist = async(req,res)=>{
     try {
         const userId=req.params.id;
-        console.log(userId);
+        //  console.log(userId);
         const user = await userModel.findOne({_id:userId});
-        console.log("user",user.wishlist)
+        //  console.log("user",user.wishlist)
         const wishlist = user.wishlist;
-        console.log(wishlist)
+        //  console.log(wishlist)
         return res.status(200).json(wishlist)
     } catch (error) {
         res.status(400);

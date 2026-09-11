@@ -17,10 +17,10 @@ const authSignin = async (req,res) => {
   // console.log(user);
   
   if(user && (await user.matchPassword(password))){ 
-    console.log(user) 
+    //  console.log(user) 
     localStorage.setItem("user_name", user.name)
     localStorage.setItem("user_ID", user._id)
-    console.log(localStorage.getItem("user_ID",user._id))
+    //  console.log(localStorage.getItem("user_ID",user._id))
     return res.json({ 
       _id: user._id, 
       name: user.name, 
@@ -60,13 +60,12 @@ const authSignup = async (req, res) => {
     email, 
     password, 
   }); 
-  localStorage.setItem("user_name",newUser.name)
-  localStorage.setItem("user_ID", newUser._id)
-  console.log(newUser); 
   if (newUser) { 
+    localStorage.setItem("user_name",newUser.name)
+    localStorage.setItem("user_ID", newUser._id)
     res.status(201).json({ 
-        id:newUser._id, 
-        name:newUser.name, 
+      id:newUser._id, 
+      name:newUser.name, 
         email:newUser.email, 
         password:newUser.password, 
         pic:newUser.pic, 
