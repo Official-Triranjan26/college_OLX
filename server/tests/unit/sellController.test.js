@@ -1,3 +1,4 @@
+/* global jest, describe, beforeEach, it, expect */
 const sellProduct = require('../../controllers/sellController'); // Adjust path
 const productModel = require('../../models/productModel');             // Adjust path
 const { LocalStorage } = require('node-localstorage');

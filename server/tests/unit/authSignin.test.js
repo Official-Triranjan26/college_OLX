@@ -1,3 +1,4 @@
+/* global jest, describe, beforeEach, it, expect */
 // 1. CommonJS Imports (No Babel needed)
 const { authSignin } = require('../../controllers/userController'); // Adjust path
 const UserModel = require('../../models/userModel');    // Adjust path
