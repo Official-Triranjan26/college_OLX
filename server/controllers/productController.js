@@ -37,9 +37,10 @@ const updateProductDetails = async (req,res) =>{
         // // Save the updated product
         res.status(200).json(updatedProduct);
 
-    } catch (error) {
-        //  console.error('Error updating product:', error);
-        res.status(500).json({ message: `Internal server error: ${error.message}` });
+    } catch (error)
+    {
+        //  console.log('Error updating product:', error);
+        res.status(500).json({ message: `Internal server error : ${error.message || error}` });
     }
 }
 

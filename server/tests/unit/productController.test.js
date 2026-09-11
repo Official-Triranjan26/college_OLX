@@ -84,12 +84,15 @@ describe('Product Details Controllers', () => {
     });
 
     it('should return 500 when an internal server error occurs', async () => {
-      Product.findByIdAndUpdate.mockRejectedValue(new Error('Database crash'));
+      const errorMessage = 'Database crash';
+      Product.findByIdAndUpdate.mockRejectedValue(new Error(errorMessage));
 
       await updateProductDetails(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+      expect(res.json).toHaveBeenCalledWith({
+        message: `Internal server error : ${errorMessage}`,
+      });
     });
   });
 });
