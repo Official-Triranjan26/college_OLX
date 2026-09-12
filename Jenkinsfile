@@ -1,76 +1,102 @@
 pipeline {
-    //  pipeline version 2
-    agent{
-        docker {
-            image 'node:22-alpine'
-            reuseNode true
-            // Ensures container runs with workspace write permissions
-            args '-u root'
-        }
-    }
+    //  pipeline version 3
+    agent any
     options {
         skipDefaultCheckout()
         disableConcurrentBuilds()
     }
-
     stages {
-        //  STAGE 1 V:1.1
         stage('SCM Checkout') {
             steps {
-                // Properly placed step function
                 cleanWs()
                 checkout scm
+                // git(
+                //     url: 'https://github.com/Official-Triranjan26/college_OLX.git',
+                //     branch: 'main'
+                // )
             }
         }
-        //  STAGE 2 V:2.3
-        stage('Install Dependencies'){
+
+        stage('Install Dependencies') {
+            agent {
+                docker {
+                    image 'node:22-alpine'
+                    args '-u root'
+                    reuseNode true
+                }
+            }
             steps {
                 sh '''
-                    # checking versions
                     node --version
                     npm --version
-                    # checking must have files
-                    for file in client/package.json client/package-lock.json server/package.json server/package-lock.json; do
-                        [ -f "$file" ] && echo "✅ $file exists" || echo "❌ $file IS MISSING"
+
+                    for file in \
+                        client/package.json \
+                        client/package-lock.json \
+                        server/package.json \
+                        server/package-lock.json
+                    do
+                        if [ -f "$file" ]; then
+                            echo "✅ $file exists"
+                        else
+                            echo "❌ $file IS MISSING"
+                            exit 1
+                        fi
                     done
                 '''
-                //  installing clientside dependencies
                 dir('client') {
-                    sh 'npm ci'
+                    sh '''
+                        echo "===== CLIENT npm ci ====="
+                        npm ci
+                    '''
                 }
-                //  installing serverside dependencies
                 dir('server') {
-                    sh 'npm ci'
+                    sh '''
+                        echo "===== SERVER npm ci ====="
+                        npm ci
+                    '''
                 }
             }
         }
-        stage('Lint'){
-            //  STAGE 3 V:3.2
+        stage('Lint') {
+            agent {
+                docker {
+                    image 'node:22-alpine'
+                    args '-u root'
+                    reuseNode true
+                }
+            }
             steps {
                 dir('client') {
-                    //  list test clientside
                     sh 'npm run lint'
                 }
                 dir('server') {
-                    //  list test serverside
                     sh 'npm run lint'
                 }
             }
         }
-        stage('Unit Test'){
-            //  STAGE 4 V:4.4
+        stage('Unit Test') {
+            agent {
+                docker {
+                    image 'node:22-alpine'
+                    args '-u root'
+                    reuseNode true
+                }
+            }
             steps {
+
                 dir('server') {
-                    //  unit test serverside
-                    sh 'npm run test'
+                    sh 'npm run test:ci'
                 }
             }
         }
     }
     post {
         always {
-            // Parses any JUnit XML reports produced under client/server folders
-            junit testResults: '**/test-results/*.xml', allowEmptyResults: true
+            junit(
+                testResults: '**/test-results/*.xml',
+                allowEmptyResults: true
+            )
         }
     }
 }
