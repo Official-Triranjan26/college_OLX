@@ -1,19 +1,30 @@
 pipeline {
-    agent any
+    //  pipeline version 2
+    agent{
+        docker {
+            image 'node:22-alpine'
+            reuseNode true
+        }
+    }
+    options {
+        // Wipes previous workspace BEFORE the run starts
+        skipDefaultCheckout()
+        disableConcurrentBuilds()
+    }
 
     stages {
+        //  STAGE 1 V:1.1
+        stage('SCM checkout') {
+            steps {
+                // 👇 Wipes out the workspace directory after the run completes
+                cleanWs()
+                checkout scm
+            }
+        }
         //  STAGE 2 V:2.3
         stage('Install Dependencies'){
-            agent{
-                docker {
-                    image 'node:22-alpine'
-                    reuseNode true
-                }
-            }
             steps {
                 sh '''
-                    # 👇 Wipes out the workspace directory after the run completes
-                    # cleanWs()
                     # checking versions
                     node --version
                     npm --version
@@ -21,52 +32,44 @@ pipeline {
                     for file in client/package.json client/package-lock.json server/package.json server/package-lock.json; do
                         [ -f "$file" ] && echo "✅ $file exists" || echo "❌ $file IS MISSING"
                     done
-                    # installing clientside dependencies
-                    cd client
-                    npm ci
-                    ls -la
-                    cd ..
-                    # installing serverside dependencies
-                    cd server
-                    npm ci
-                    ls -la
                 '''
+                //  installing clientside dependencies
+                dir('client') {
+                    sh 'npm ci'
+                }
+                //  installing serverside dependencies
+                dir('server') {
+                    sh 'npm ci'
+                }
             }
         }
         stage('Lint'){
-            //  STAGE 3 V:3.1
-            agent{
-                docker {
-                    image 'node:22-alpine'
-                    reuseNode true
-                }
-            }
+            //  STAGE 3 V:3.2
             steps {
-                sh '''
-                    # list test clientside
-                    cd client
-                    npm run lint
-                    # list test serverside
-                    cd ../server
-                    npm run lint
-                '''
+                dir('client') {
+                    //  list test clientside
+                    sh 'npm run lint'
+                }
+                dir('server') {
+                    //  list test serverside
+                    sh 'npm run lint'
+                }
             }
         }
         stage('Unit Test'){
-            //  STAGE 4 V:4.3
-            agent{
-                docker {
-                    image 'node:22-alpine'
-                    reuseNode true
+            //  STAGE 4 V:4.4
+            steps {
+                dir('server') {
+                    //  unit test serverside
+                    sh 'npm run test'
                 }
             }
-            steps {
-                sh '''
-                    # list test clientside
-                    cd server
-                    npm run test
-                '''
-            }
+        }
+    }
+    post {
+        always {
+            // Parses any JUnit XML reports produced under client/server folders
+            junit testResults: '**/test-results/*.xml', allowEmptyResults: true
         }
     }
 }
