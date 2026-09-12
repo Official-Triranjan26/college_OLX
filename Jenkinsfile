@@ -9,17 +9,16 @@ pipeline {
         }
     }
     options {
-        // Wipes previous workspace BEFORE the run starts
         skipDefaultCheckout()
         disableConcurrentBuilds()
-        // Wipes workspace BEFORE the agent attaches/mounts volumes
-        cleanWs()
     }
 
     stages {
         //  STAGE 1 V:1.1
-        stage('SCM checkout') {
+        stage('SCM Checkout') {
             steps {
+                // Properly placed step function
+                cleanWs()
                 checkout scm
             }
         }
