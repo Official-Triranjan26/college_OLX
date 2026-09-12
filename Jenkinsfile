@@ -4,20 +4,22 @@ pipeline {
         docker {
             image 'node:22-alpine'
             reuseNode true
+            // Ensures container runs with workspace write permissions
+            args '-u root'
         }
     }
     options {
         // Wipes previous workspace BEFORE the run starts
         skipDefaultCheckout()
         disableConcurrentBuilds()
+        // Wipes workspace BEFORE the agent attaches/mounts volumes
+        cleanWs()
     }
 
     stages {
         //  STAGE 1 V:1.1
         stage('SCM checkout') {
             steps {
-                // 👇 Wipes out the workspace directory after the run completes
-                cleanWs()
                 checkout scm
             }
         }
