@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  test-db:
+    image: mongo:latest
+    container_name: mern_test_mongodb
+    ports:
+      - "27018:27017" # Map to 27018 locally so it doesn't conflict with dev MongoDB on 27017
+    environment:
+      - MONGO_INITDB_DATABASE=test_db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app-test:
+    build:
+      context: ../..              # Changed: Points back to root where package.json & Dockerfile live
+      dockerfile: Dockerfile
+    container_name: mern_app_test
+    environment:
+      - NODE_ENV=test
+      - MONGO_URI=mongodb://test-db:27017/test_db
+    depends_on:
+      test-db:
+        condition: service_healthy
+    # Run tests and auto-exit with the test runner code
+    command: npm run test:integration

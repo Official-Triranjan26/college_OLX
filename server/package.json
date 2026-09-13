@@ -7,8 +7,10 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "lint": "eslint .",
-    "test": "jest --runInBand",
-    "test:ci": "jest --ci --reporters=default --reporters=jest-junit"
+    "test:unit": "jest --config tests/jestConfig/jest.config.unit.js",
+    "test:integration": "jest --config tests/jestConfig/jest.config.integration.js",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:ci": "jest --config tests/jestConfig/jest.config.unit.js --ci --reporters=default --reporters=jest-junit && jest --config tests/jestConfig/jest.config.integration.js --ci --reporters=default --reporters=jest-junit"
   },
   "author": "Subha Mal",
   "license": "ISC",
@@ -18,7 +20,8 @@
     "globals": "^17.12.0",
     "jest": "^30.5.1",
     "jest-junit": "^17.0.0",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "supertest": "^7.2.2"
   },
   "dependencies": {
     "aws-sdk": "^2.1596.0",
@@ -32,7 +35,10 @@
     "razorpay": "^2.9.3"
   },
   "jest-junit": {
-    "outputDirectory": "./test-results",
-    "outputName": "junit.xml"
-  }
+  "outputDirectory": "./test-results",
+  "outputName": "junit.xml",
+  "uniqueOutputName": "true",
+  "classNameTemplate": "{classname}",
+  "titleTemplate": "{title}"
+}
 }
