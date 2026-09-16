@@ -1,5 +1,5 @@
 const request = require('supertest');
-const mongoose = require('mongoose');
+//  const mongoose = require('mongoose');
 const app = require('../../app');
 const UserModel = require('../../models/userModel');
 const { connectDB, dropDB, dropCollections } = require('../setup/test-db');

@@ -1,4 +1,3 @@
-/* global jest, describe, beforeEach, it, expect */
 const {
   getAllListed,
   getAllElectronics,
