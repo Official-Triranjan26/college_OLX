@@ -25,4 +25,4 @@ services:
       test-db:
         condition: service_healthy
     # Run tests and auto-exit with the test runner code
-    command: npm run test:integration
+    command: npm run test:integration:junit

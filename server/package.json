@@ -10,6 +10,8 @@
     "test:unit": "jest --config tests/jestConfig/jest.config.unit.js",
     "test:integration": "jest --config tests/jestConfig/jest.config.integration.js",
     "test": "npm run test:unit && npm run test:integration",
+    "test:unit:junit": "jest --config tests/jestConfig/jest.config.unit.js --reporters=default --reporters=jest-junit",
+    "test:integration:junit": "jest --config tests/jestConfig/jest.config.integration.js --reporters=default --reporters=jest-junit",
     "test:ci": "jest --config tests/jestConfig/jest.config.unit.js --ci --reporters=default --reporters=jest-junit && jest --config tests/jestConfig/jest.config.integration.js --ci --reporters=default --reporters=jest-junit"
   },
   "author": "Subha Mal",

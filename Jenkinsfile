@@ -1,12 +1,20 @@
 pipeline {
     //  pipeline version 3
     agent any
+    parameters {
+        choice(
+            name: 'STAGE_TO_RUN',
+            choices: ['ALL', 'Unit Test', 'Integration Test', 'Build & Smoke Test'],
+            description: 'Select a specific stage to run, or ALL for a complete pipeline run.'
+        )
+    }
     options {
         skipDefaultCheckout()
         disableConcurrentBuilds()
     }
     stages {
         stage('SCM Checkout') {
+        // SCM Checkout always runs to retrieve codebase
             steps {
                 cleanWs()
                 checkout scm
@@ -18,6 +26,12 @@ pipeline {
         }
 
         stage('Install Dependencies') {
+        // Skips if running Integration Test alone or Build-only tests
+            when {
+                expression { 
+                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'Unit Test' 
+                }
+            }
             agent {
                 docker {
                     image 'node:22-alpine'
@@ -59,6 +73,9 @@ pipeline {
             }
         }
         stage('Lint') {
+            when {
+                expression { return params.STAGE_TO_RUN == 'ALL' }
+            }
             agent {
                 docker {
                     image 'node:22-alpine'
@@ -76,6 +93,11 @@ pipeline {
             }
         }
         stage('Unit Test') {
+            when {
+                expression { 
+                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'Unit Test' 
+                }
+            }
             agent {
                 docker {
                     image 'node:22-alpine'
@@ -86,11 +108,16 @@ pipeline {
             steps {
 
                 dir('server') {
-                    sh 'npm run test:unit'
+                    sh 'npm run test:unit:junit'
                 }
             }
         }
         stage('Integration Test') {
+            when {
+                expression { 
+                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'Integration Test' 
+                }
+            }
             environment {
                 // Path to your test compose file relative to repository root
                 COMPOSE_FILE = 'server/tests/setup/docker-compose.test.yml'
@@ -113,6 +140,38 @@ pipeline {
                         sh "docker compose -f ${COMPOSE_FILE} down -v --remove-orphans"
                     }
                 }
+            }
+        }
+        stage('Build Docker Images') {
+            when {
+                expression { 
+                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'Build & Smoke Test' 
+                }
+            }
+            steps {
+                sh 'docker compose build'
+            }
+        }
+
+        stage('Start Containers & Smoke Tests') {
+            when {
+                expression { 
+                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'Build & Smoke Test' 
+                }
+            }
+            steps {
+                sh '''
+                    docker compose up -d
+
+                    echo "Waiting for services..."
+                    sleep 10
+
+                    echo "Checking frontend..."
+                    curl --fail http://localhost:3000
+
+                    echo "Checking backend..."
+                    curl --fail http://localhost:4000/health
+                '''
             }
         }
     }
