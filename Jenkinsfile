@@ -86,7 +86,7 @@ pipeline {
             steps {
 
                 dir('server') {
-                    sh 'npm run test:ci'
+                    sh 'npm run test:unit'
                 }
             }
         }
