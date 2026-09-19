@@ -1,3 +1,17 @@
+// Mock node-localstorage in memory to prevent Docker disk lockups
+jest.mock('node-localstorage', () => {
+  return {
+    LocalStorage: jest.fn().mockImplementation(() => {
+      let store = {};
+      return {
+        getItem: jest.fn((key) => store[key] || null),
+        setItem: jest.fn((key, value) => { store[key] = value.toString(); }),
+        clear: jest.fn(() => { store = {}; }),
+        removeItem: jest.fn((key) => { delete store[key]; }),
+      };
+    }),
+  };
+});
 const request = require('supertest');
 //  const mongoose = require('mongoose');
 const app = require('../../app');

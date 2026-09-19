@@ -91,27 +91,21 @@ pipeline {
             }
         }
         stage('Integration Test') {
-            agent {
-                docker {
-                    image 'node:22-alpine'
-                    args '-u root'
-                    reuseNode true
-                }
-            }
             environment {
                 // Path to your test compose file relative to repository root
-                COMPOSE_FILE = 'tests/setup/docker-compose.test.yml'
+                COMPOSE_FILE = 'server/tests/setup/docker-compose.test.yml'
             }
             steps {
                 script {
                     echo 'Starting Integration Test Suite via Docker Compose...'
+                    sh 'docker version'
                     
                     try {
                         // 1. Build and run tests. --exit-code-from app-test ensures Jenkins 
                         // captures Jest failures directly.
                         sh """
                             docker compose -f ${COMPOSE_FILE} build --no-cache app-test
-                            docker compose -f ${COMPOSE_FILE} up --exit-code-from app-test --abort-on-container-exit
+                            docker compose -f ${COMPOSE_FILE} up --exit-code-from app-test --abort-on-container-exit --attach app-test
                         """
                     } finally {
                         // 2. Always clean up containers, networks, and volumes (even if tests fail)
