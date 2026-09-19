@@ -1,3 +1,4 @@
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'test_jwt_secret_key_12345';
 // Mock node-localstorage in memory to prevent Docker disk lockups
 jest.mock('node-localstorage', () => {
   return {
