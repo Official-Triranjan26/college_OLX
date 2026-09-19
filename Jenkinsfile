@@ -161,16 +161,20 @@ pipeline {
             }
             steps {
                 sh '''
+                    # Start containers
                     docker compose up -d
 
-                    echo "Waiting for services..."
-                    sleep 10
+                    echo "=== Checking Container Status ==="
+                    docker compose ps
+
+                    echo "Waiting for services to spin up..."
+                    sleep 15
 
                     echo "Checking frontend..."
-                    curl --fail http://localhost:3000
+                    curl --fail --retry 3 --retry-delay 5 http://localhost:3000
 
                     echo "Checking backend..."
-                    curl --fail http://localhost:4000/health
+                    curl --fail --retry 3 --retry-delay 5 http://localhost:4000/health
                 '''
             }
         }
@@ -183,6 +187,10 @@ pipeline {
             )
             // Optional: Archive raw XML files as downloadable build artifacts
             archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
+            echo "=== Cleaning up running containers ==="
+            sh 'docker compose down -v --remove-orphans'
         }
+
+
     }
 }
