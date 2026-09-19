@@ -88,12 +88,36 @@ app.post("/api/validate", async (req, res) => {
   });
 });
 
-app.post('/api/healthcheck', async (req, res) => {
+// app.post('/api/healthcheck', async (req, res) => {
+//   try {
+//     const newPing = await Ping.create({ message: req.body.message || 'pong' });
+//     res.status(201).json({ success: true, ping: newPing });
+//   } catch (error) {
+//     console.error('Healthcheck Error:', error); // <--- Add this log
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// });
+app.get('/api/healthcheck', async (req, res) => {
   try {
-    const newPing = await Ping.create({ message: req.body.message || 'pong' });
-    res.status(201).json({ success: true, ping: newPing });
+    // 1. Check if MongoDB connection is ready (1 = connected)
+    const dbStatus = mongoose.connection.readyState === 1;
+
+    if (!dbStatus) {
+      return res.status(503).json({
+        success: false,
+        status: 'UNHEALTHY',
+        message: 'Database not connected'
+      });
+    }
+
+    // 2. Return 200 OK for successful healthcheck
+    res.status(200).json({
+      success: true,
+      status: 'UP',
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
-    console.error('Healthcheck Error:', error); // <--- Add this log
+    console.error('Healthcheck Error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
