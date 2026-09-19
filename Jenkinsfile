@@ -171,11 +171,11 @@ pipeline {
 
                     docker compose logs backend
 
-                    echo "Checking frontend..."
-                    curl --fail --retry 3 --retry-delay 5 http://localhost:3000
+                    echo "Checking frontend via docker compose exec..."
+                    docker compose exec -T frontend curl --fail http://localhost:80
 
-                    echo "Checking backend..."
-                    curl --fail --retry 3 --retry-delay 5 http://localhost:4000/health
+                    echo "Checking backend via docker compose exec..."
+                    docker compose exec -T backend node -e "http.get('http://localhost:4000/api/healthcheck', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
                 '''
             }
         }
