@@ -19,6 +19,9 @@ services:
       - "4000"
     ports:
       - "4000:4000"
+    environment:
+      - MONGO_URI=mongodb://database:27017/college_olx
+      - PORT=4000
     depends_on:
       - database
     networks:

@@ -1,5 +1,4 @@
 pipeline {
-    //  pipeline version 3
     agent any
     parameters {
         choice(
@@ -169,6 +168,8 @@ pipeline {
 
                     echo "Waiting for services to spin up..."
                     sleep 15
+
+                    docker compose logs backend
 
                     echo "Checking frontend..."
                     curl --fail --retry 3 --retry-delay 5 http://localhost:3000
