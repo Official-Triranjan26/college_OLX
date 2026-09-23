@@ -144,7 +144,9 @@ pipeline {
         stage('Build Docker Images') {
             when {
                 expression { 
-                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'Build & Smoke Test' 
+                    return params.STAGE_TO_RUN == 'ALL' || 
+                    params.STAGE_TO_RUN == 'Build & Smoke Test'  ||
+                     params.STAGE_TO_RUN == 'E2E Test'
                 }
             }
             steps {
@@ -166,18 +168,24 @@ pipeline {
                     docker compose -f docker-compose.e2e.yml up -d frontend backend database
 
                     echo "=== Checking Container Status ==="
-                    docker compose ps
+
+                    docker compose -f docker-compose.e2e.yml ps
 
                     echo "Waiting for services to spin up..."
                     sleep 15
 
-                    // docker compose logs backend
+                    echo "=== Checking Frontend ==="
 
-                    echo "Checking frontend via docker compose exec..."
-                    docker compose exec -T frontend curl --fail http://localhost:80
+                    docker compose -f docker-compose.e2e.yml \
+                        exec -T frontend curl --fail http://localhost:80
 
-                    echo "Checking backend via docker compose exec..."
-                    docker compose exec -T backend node -e "http.get('http://localhost:4000/api/healthcheck', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
+                    echo "=== Checking Backend ==="
+
+                    docker compose -f docker-compose.e2e.yml \
+                        exec -T backend \
+                        node -e "http.get('http://localhost:4000/api/healthcheck', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
+
+                    echo "=== Smoke Tests Passed ==="
                 '''
             }
         }
@@ -202,7 +210,24 @@ pipeline {
                 allowEmptyResults: true
             )
             // Optional: Archive raw XML files as downloadable build artifacts
-            archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
+            echo "=== Archiving Unit Test Results ==="
+            archiveArtifacts (
+                artifacts: '**/test-results/*.xml', 
+                allowEmptyArchive: true
+            )
+            echo "=== Archiving Playwright Results ==="
+
+            archiveArtifacts(
+                artifacts: 'test-results/**/*.xml',
+                allowEmptyArchive: true
+            )
+
+            echo "=== Archiving Playwright HTML Report ==="
+
+            archiveArtifacts(
+                artifacts: 'playwright-report/**/*',
+                allowEmptyArchive: true
+            )
             echo "=== Cleaning up running containers ==="
             sh 'docker compose -f docker-compose.e2e.yml down -v --remove-orphans'
         }
