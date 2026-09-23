@@ -1,0 +1,62 @@
+name: college-olx
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - college-olx-private-network
+    restart: always
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    expose:
+      - "4000"
+    ports:
+      - "4000:4000"
+    environment:
+      - MONGO_URI=mongodb://database:27017/college_olx
+      - PORT=4000
+    depends_on:
+      - database
+    networks:
+      - college-olx-private-network
+    restart: always
+
+  database:
+    image: mongo:6.0 # Use the official MongoDB image
+    volumes:
+      - mongo-data:/data/db # Map the volume for persistent data
+    expose:
+      - "27017"
+    ports:
+      - "27018:27017"
+    networks:
+      - college-olx-private-network
+    restart: always
+
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.63.0-noble
+    working_dir: /e2e
+    volumes:
+      - .:/e2e
+    environment:
+      - BASE_URL=http://frontend:80
+    networks:
+      - college-olx-private-network
+    depends_on:
+      - frontend
+      - backend
+
+networks:
+  college-olx-private-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

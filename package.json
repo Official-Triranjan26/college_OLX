@@ -1,0 +1,23 @@
+{
+  "name": "collegeolx",
+  "version": "1.0.0",
+  "description": "┌─────────────────────────────────────┐\r                 │ 1. Checkout Source                  │\r                 └──────────────────┬──────────────────┘\r                                    ▼\r                 ┌─────────────────────────────────────┐\r                 │ 2. Install Dependencies             │\r                 └──────────────────┬──────────────────┘\r                                    ▼\r                 ┌─────────────────────────────────────┐\r                 │ 3. Lint                             │\r                 │                                     │\r                 │  Fast code quality validation       │\r                 └──────────────────┬──────────────────┘\r                                    ▼\r                 ┌─────────────────────────────────────┐\r                 │ 4. Unit Tests                       │\r                 │                                     │\r                 │  Test isolated application logic    │\r                 └──────────────────┬──────────────────┘\r                                    ▼\r                 ┌─────────────────────────────────────┐\r                 │ 5. Integration Tests                │\r                 │                                     │\r                 │  Backend + Database                 │\r                 └──────────────────┬──────────────────┘\r                                    ▼\r                 ┌─────────────────────────────────────┐\r                 │ 6. Build Docker Images              │\r                 │                                     │\r                 │  Frontend + Backend                 │\r                 └──────────────────┬──────────────────┘\r                                    ▼\r                 ┌─────────────────────────────────────┐\r                 │ 7. Start Containers                 │\r                 │                                     │\r                 │  docker compose up                  │\r                 └──────────────────┬──────────────────┘\r                                    ▼\r                 ┌─────────────────────────────────────┐\r                 │ 8. Smoke Tests                      │\r                 │                                     │\r                 │  Are containers healthy?            │\r                 └──────────────────┬──────────────────┘\r                                    ▼\r                 ┌─────────────────────────────────────┐\r                 │ 9. E2E Tests                        │\r                 │                                     │\r                 │  Playwright                         │\r                 └──────────────────┬──────────────────┘\r                                    ▼\r                 ┌─────────────────────────────────────┐\r                 │ 10. Push Images to Registry         │\r                 └─────────────────────────────────────┘",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Official-Triranjan26/college_OLX.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Official-Triranjan26/college_OLX/issues"
+  },
+  "homepage": "https://github.com/Official-Triranjan26/college_OLX#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.2"
+  }
+}

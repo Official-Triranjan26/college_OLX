@@ -3,7 +3,7 @@ pipeline {
     parameters {
         choice(
             name: 'STAGE_TO_RUN',
-            choices: ['ALL', 'Unit Test', 'Integration Test', 'Build & Smoke Test'],
+            choices: ['ALL', 'Unit Test', 'Integration Test', 'Build & Smoke Test', 'E2E Test'],
             description: 'Select a specific stage to run, or ALL for a complete pipeline run.'
         )
     }
@@ -148,20 +148,22 @@ pipeline {
                 }
             }
             steps {
-                sh 'docker compose build'
+                sh 'docker compose -f docker-compose.e2e.yml build'
             }
         }
 
         stage('Start Containers & Smoke Tests') {
             when {
                 expression { 
-                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'Build & Smoke Test' 
+                    return params.STAGE_TO_RUN == 'ALL' ||
+                     params.STAGE_TO_RUN == 'Build & Smoke Test' ||
+                     params.STAGE_TO_RUN == 'E2E Test'
                 }
             }
             steps {
                 sh '''
                     # Start containers
-                    docker compose up -d
+                    docker compose -f docker-compose.e2e.yml up -d frontend backend database
 
                     echo "=== Checking Container Status ==="
                     docker compose ps
@@ -169,13 +171,26 @@ pipeline {
                     echo "Waiting for services to spin up..."
                     sleep 15
 
-                    docker compose logs backend
+                    // docker compose logs backend
 
                     echo "Checking frontend via docker compose exec..."
                     docker compose exec -T frontend curl --fail http://localhost:80
 
                     echo "Checking backend via docker compose exec..."
                     docker compose exec -T backend node -e "http.get('http://localhost:4000/api/healthcheck', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
+                '''
+            }
+        }
+        stage('E2E Test') {
+            when {
+                expression { 
+                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'E2E Test' 
+                }
+            }
+            steps {
+                sh '''
+                echo "=== Running Playwright E2E Tests ==="
+                    docker compose -f docker-compose.e2e.yml run --rm playwright /bin/sh -c "npm ci && npx playwright test"
                 '''
             }
         }
@@ -189,7 +204,7 @@ pipeline {
             // Optional: Archive raw XML files as downloadable build artifacts
             archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
             echo "=== Cleaning up running containers ==="
-            sh 'docker compose down -v --remove-orphans'
+            sh 'docker compose -f docker-compose.e2e.yml down -v --remove-orphans'
         }
 
 

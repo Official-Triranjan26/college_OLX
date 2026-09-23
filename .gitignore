@@ -9,3 +9,11 @@ server/.env
 .dockerignore
 jsconfig.json
 temp.text
+
+# Playwright
+/node_modules
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
