@@ -1,0 +1,27 @@
+{
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "family": "college_olx_ecs_task-prod",
+    "containerDefinitions": [
+        {
+            "name": "college_olx",
+            "image": "nginx:1.26-alpine",
+            "portMappings": [
+                {
+                    "name": "ngnix-80-tcp",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true
+        }
+    ],
+    "volumes": [],
+    "networkMode": "awsvpc",
+    "memory": "512",
+    "cpu": "256",
+    "executionRoleArn": ""
+}

@@ -3,7 +3,7 @@ pipeline {
     parameters {
         choice(
             name: 'STAGE_TO_RUN',
-            choices: ['ALL', 'Unit Test', 'Integration Test', 'Build & Smoke Test', 'E2E Test'],
+            choices: ['ALL', 'Unit Test', 'Integration Test', 'Build & Smoke Test', 'E2E Test','Push to ECR'],
             description: 'Select a specific stage to run, or ALL for a complete pipeline run.'
         )
     }
@@ -153,7 +153,6 @@ pipeline {
                 sh 'docker compose -f docker-compose.e2e.yml build'
             }
         }
-
         stage('Start Containers & Smoke Tests') {
             when {
                 expression { 
@@ -200,6 +199,39 @@ pipeline {
                 echo "=== Running Playwright E2E Tests ==="
                     docker compose -f docker-compose.e2e.yml run --rm playwright /bin/sh -c "npm ci && npx playwright test"
                 '''
+            }
+        }
+        stage('Push to ECR') {
+            when {
+                expression { 
+                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'Push to ECR' 
+                }
+            }
+            environment {
+                AWS_REGION     = 'us-east-1'
+                // AWS_ACCOUNT_ID = '247333588188' // Replace with your AWS Account ID
+
+            }
+            agent {
+                docker {
+                    image 'amazon/aws-cli:latest'
+                    reuseNode true
+                    args "--entrypoint=''"
+                    // Mount docker socket so the container can control host Docker daemon
+                    //  args '-v /var/run/docker.sock:/var/run/docker.sock -u 0'
+                }
+            }
+            steps {
+                //  If using AWS IAM User Credentials from Jenkins Credentials Manager
+                 withCredentials([
+                    aws(credentialsId: 'aws_ecr_ecs_credentials', 
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh '''
+                            aws --version
+                            aws ecs register-task-definition --cli-input-json file://aws\task-defination-prod.json
+                        '''
+                }
             }
         }
     }
