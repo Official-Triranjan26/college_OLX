@@ -229,7 +229,11 @@ pipeline {
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh '''
                             aws --version
-                            aws ecs register-task-definition --cli-input-json file://aws\task-defination-prod.json
+                            #aws ecs register-task-definition --cli-input-json file://aws\task-defination-prod.json
+                            aws ecs update-service \
+                            --cluster college_olx_cluster_prod \
+                            --service college_olx_ecs_task-prod-service-i4pp6iay \
+                            --college_olx_ecs_task-prod:2
                         '''
                 }
             }
