@@ -8,9 +8,10 @@ pipeline {
         AWS_ECS_SERVICE = 'college_olx_ecs_task-prod-service-i4pp6iay'
         AWS_ECS_TD_PROD = 'college_olx_ecs_task-prod'
         AWS_ECR_REGISTRY = '247333588188.dkr.ecr.us-east-1.amazonaws.com'
-        FRONTEND_APP = 'collegeolx-frontend-service'
-        BACKERND_APP = 'collegeolx-backend-api'
-        DATABASE = ''
+
+        FRONTEND_IMAGE_LOCAL_NAME = 'collegeolx-frontend-service'
+        BACKEND_IMAGE_LOCAL_NAME = 'collegeolx-backend-api'
+        DATABASE_IMAGE_LOCAL_NAME = 'collegeolx-database'
     }
     parameters {
         choice(
@@ -164,7 +165,7 @@ pipeline {
             steps {
                 sh '''
                     docker compose -f docker-compose.e2e.yml build
-                    docker ps
+                    docker images
                 '''
             }
         }
@@ -219,7 +220,8 @@ pipeline {
         stage('Build Custom AWS-CLI') {
             when {
                 expression { 
-                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'Push to ECR' 
+                    return params.STAGE_TO_RUN == 'ALL' || 
+                    // params.STAGE_TO_RUN == 'Push to ECR' 
                 }
             }
             steps {
@@ -243,14 +245,6 @@ pipeline {
                     // Mount docker socket so the container can control host Docker daemon
                 }
             }
-            // environment {
-            //     AWS_REGION = 'us-east-1'
-            //     AWS_ECS_CLUSTER = 'college_olx_cluster_prod'
-            //     AWS_ECS_SERVICE = 'college_olx_ecs_task-prod-service-i4pp6iay'
-            //     AWS_ECS_TD_PROD = 'college_olx_ecs_task-prod'
-            //     AWS_ACCOUNT_ID = '247333588188' // Replace with your AWS Account ID
-
-            // }
             steps {
                 //  If using AWS IAM User Credentials from Jenkins Credentials Manager
                  withCredentials([
@@ -261,8 +255,11 @@ pipeline {
                             # checking aws version
                             aws --version
 
+                            # checking image availablity locally
+                            docker images
+
                             # tagging images before pushing
-                            docker tag collegeolx-frontend $AWS_ECR_REGISTRY/$FRONTEND_APP:$APP_VERSION
+                            # docker tag college-olx-frontend $AWS_ECR_REGISTRY/$FRONTEND_APP:$APP_VERSION
                             # docker tag collegeolx-backend $AWS_ECR_REGISTRY/$BACKEND_APP:$APP_VERSION
 
                             # login to aws ecr
@@ -271,30 +268,52 @@ pipeline {
                             --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
                             # check repo exists within registry
-                            aws ecr create-repository --repository-name ${FRONTEND_APP} --region ${AWS_REGION} || echo "Repository ${FRONTEND_APP} already exists."
+                            # aws ecr create-repository --repository-name ${FRONTEND_APP} --region ${AWS_REGION} || echo "Repository ${FRONTEND_APP} already exists."
                             # aws ecr create-repository --repository-name ${BACKEND_APP} --region ${AWS_REGION} || echo "Repository ${BACKEND_APP} already exists."
 
                             # push images to aws ecr
-                            docker push $AWS_ECR_REGISTRY/$FRONTEND_APP:$APP_VERSION
+                            # docker push $AWS_ECR_REGISTRY/$FRONTEND_APP:$APP_VERSION
                             # docker push $AWS_ECR_REGISTRY/$BACKEND_APP:$APP_VERSION
                         '''
-                        //  script {
-                        //     def imageExists = sh(script: "docker image inspect ${localImage} >/dev/null 2>&1", returnStatus: true)
-                        //     if (imageExists == 0)
-                        //         echo "✅ Success: $IMAGE_NAME exists locally. Proceeding to tag and push."
+                        script {
+                            // Define your distinct apps exactly as they are named in your docker-compose.yml file
+                            def apps = ['$FRONTEND_IMAGE_LOCAL_NAME', '$BACKEND_IMAGE_LOCAL_NAME', '$DATABASE_IMAGE_LOCAL_NAME']
+                            
+                            // Loop through each image
+                            for (int i = 0; i < apps.size(); i++) {
+                                def appName = apps[i]
+                                def localImage = "${appName}:latest"
+                                def remoteImage = "${AWS_ECR_REGISTRY}/${appName}:${APP_VERSION}"
                                 
-                        //         // Run your ECR tagging commands here...
-                        //         //docker tag $IMAGE_NAME $AWS_DOCKER_REGISTRY/backend-api:$REACT_APP_VERSION
-                        //         sh '''
-                        //             aws --version
-                        //             aws ecr get-login-password --region $AWS_REGION | docker login \
-                        //             --username AWS \
-                        //             --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-                        //         '''
-                        //     else
-                        //         echo "❌ Error: $IMAGE_NAME was not found locally! Did the build step fail?"
-                        //         exit 1
-                        // }
+                                echo "--------------------------------------------------------"
+                                echo "Processing Service: ${appName}"
+                                echo "--------------------------------------------------------"
+                                
+                                // 1. Verify if the local image built successfully in the previous stage
+                                def imageExists = sh(script: "docker image inspect ${localImage} >/dev/null 2>&1", returnStatus: true)
+                                
+                                if (imageExists == 0) {
+                                    echo "✅ Local image ${localImage} found."
+                                    
+                                    // 2. Pre-create the ECR repository if it does not exist yet
+                                    sh """
+                                        aws ecr create-repository --repository-name ${appName} --region ${AWS_REGION} || echo "Repository ${appName} already exists."
+                                    """
+                                    
+                                    // 3. Tag the image using correct Docker syntax: docker tag SOURCE TARGET
+                                    echo "Tagging image: ${localImage} -> ${remoteImage}"
+                                    sh "docker tag ${localImage} ${remoteImage}"
+                                    
+                                    // 4. Push to ECR
+                                    echo "Pushing image to AWS ECR..."
+                                    sh "docker push ${remoteImage}"
+                                    
+                                } else {
+                                    // Mark the pipeline stage as failed if an image is missing
+                                    error "❌ Local image ${localImage} was not found! The build stage likely failed silently."
+                                }
+                            }
+                        }
                     }
             }
         }

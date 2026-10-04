@@ -1,18 +1,18 @@
-name: college-olx
+name: collegeolx
 services:
-  frontend:
+  frontend-service:
     build:
       context: ./client
       dockerfile: Dockerfile
     ports:
       - "3000:80"
     depends_on:
-      - backend
+      - backend-api
     networks:
       - college-olx-private-network
     restart: always
 
-  backend:
+  backend-api:
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -47,12 +47,12 @@ services:
     volumes:
       - .:/e2e
     environment:
-      - BASE_URL=http://frontend:80
+      - BASE_URL=http://frontend-service:80
     networks:
       - college-olx-private-network
     depends_on:
-      - frontend
-      - backend
+      - frontend-service
+      - backend-api
 
 networks:
   college-olx-private-network:
