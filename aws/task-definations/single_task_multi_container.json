@@ -1,0 +1,56 @@
+{
+    "family": "college_olx_ecs_task-prod",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "executionRoleArn": "arn:aws:iam::247333588188:role/aws_ecs_task_execuation_role",
+    "volumes": [],
+    "containerDefinitions": [
+        {
+            "name": "collegeolx-frontend-service",
+            "image": "247333588188.dkr.ecr.us-east-1.amazonaws.com/collegeolx-frontend-service:latest",
+            "essential": true,
+            "portMappings": [
+                {
+                    "name": "ngnix-80-tcp",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ]
+        },
+        {
+            "name": "collegeolx-backend-api",
+            "image": "247333588188.dkr.ecr.us-east-1.amazonaws.com/collegeolx-backend-api:latest",
+            "essential": true,
+            "portMappings": [
+                {
+                    "name": "express-4000-tcp",
+                    "containerPort": 4000,
+                    "hostPort": 4000,
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "PORT",
+                    "value": "4000"
+                }
+            ],
+            "secrets": [
+                {
+                    "name": "MONGO_URI",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:247333588188:secret:/college_olx/prod/MONGO_URI-C7aike"
+                },
+                {
+                    "name": "JWT_SECRET",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:247333588188:secret:/college_olx/prod/JWT_SECRET-PhluhJ"
+                }
+            ]
+        }
+    ]
+}

@@ -220,8 +220,7 @@ pipeline {
         stage('Build Custom AWS-CLI') {
             when {
                 expression { 
-                    return params.STAGE_TO_RUN == 'ALL' || 
-                    // params.STAGE_TO_RUN == 'Push to ECR' 
+                    return params.STAGE_TO_RUN == 'ALL' || params.STAGE_TO_RUN == 'Push to ECR' 
                 }
             }
             steps {
@@ -277,7 +276,8 @@ pipeline {
                         '''
                         script {
                             // Define your distinct apps exactly as they are named in your docker-compose.yml file
-                            def apps = ['$FRONTEND_IMAGE_LOCAL_NAME', '$BACKEND_IMAGE_LOCAL_NAME', '$DATABASE_IMAGE_LOCAL_NAME']
+                            def apps = ['$FRONTEND_IMAGE_LOCAL_NAME', '$BACKEND_IMAGE_LOCAL_NAME']
+                            // def apps = ['$FRONTEND_IMAGE_LOCAL_NAME', '$BACKEND_IMAGE_LOCAL_NAME', '$DATABASE_IMAGE_LOCAL_NAME']
                             
                             // Loop through each image
                             for (int i = 0; i < apps.size(); i++) {
@@ -325,20 +325,12 @@ pipeline {
             }
             agent {
                 docker {
-                    image 'amazon/aws-cli:latest'
+                    image 'custom-aws-cli'
                     reuseNode true
-                    args "-u root --entrypoint=''"
+                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
                     // Mount docker socket so the container can control host Docker daemon
                     //  args '-v /var/run/docker.sock:/var/run/docker.sock -u 0'
                 }
-            }
-            environment {
-                AWS_REGION = 'us-east-1'
-                AWS_ECS_CLUSTER = 'college_olx_cluster_prod'
-                AWS_ECS_SERVICE = 'college_olx_ecs_task-prod-service-i4pp6iay'
-                AWS_ECS_TD_PROD = 'college_olx_ecs_task-prod'
-                // AWS_ACCOUNT_ID = '247333588188' // Replace with your AWS Account ID
-
             }
             steps {
                 //  If using AWS IAM User Credentials from Jenkins Credentials Manager

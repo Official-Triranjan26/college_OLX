@@ -1,8 +1,13 @@
 {
+    "family": "college_olx_ecs_task-prod",
+    "networkMode": "awsvpc",
     "requiresCompatibilities": [
         "FARGATE"
     ],
-    "family": "college_olx_ecs_task-prod",
+    "cpu": "256",
+    "memory": "512",
+    "executionRoleArn": "",
+    "volumes": [],
     "containerDefinitions": [
         {
             "name": "college_olx",
@@ -18,10 +23,5 @@
             ],
             "essential": true
         }
-    ],
-    "volumes": [],
-    "networkMode": "awsvpc",
-    "memory": "512",
-    "cpu": "256",
-    "executionRoleArn": ""
+    ]
 }
